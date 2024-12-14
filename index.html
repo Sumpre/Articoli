@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotbar e Rettangolo Fluttuante</title>
+    <style>
+        @keyframes rainbow {
+            0% { color: red; }
+            14% { color: orange; }
+            28% { color: yellow; }
+            42% { color: green; }
+            56% { color: blue; }
+            70% { color: indigo; }
+            84% { color: violet; }
+            100% { color: red; }
+        }
+
+        body {
+            margin: 0;
+            height: 200vh;
+            overflow-y: scroll;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .hotbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            padding: 0 20px;
+            transition: height 0.3s ease;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .hotbar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .arrow {
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+
+        .expanded {
+            height: 200px;
+        }
+
+        .expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .buttons {
+            display: none;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        .expanded .buttons {
+            display: flex;
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #eee;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            animation: rainbow 5s infinite;
+        }
+
+        .button:hover {
+            background-color: #ddd;
+        }
+
+        .icon {
+            margin-left: 10px;
+            width: 24px;
+            height: 24px;
+        }
+
+        .floating-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 90%;
+            width: 100%;
+            transition: height 0.5s ease;
+            position: relative;
+            margin-top: 80px;
+            overflow: hidden;
+            height: 70px;
+        }
+
+        .floating-box .content {
+            font-size: 16px;
+            color: #333;
+            position: relative;
+            padding-right: 30px;
+        }
+
+        .floating-box .box-arrow {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+
+        .floating-box.expanded .content {
+            font-weight: bold;
+        }
+
+        .floating-box.expanded .box-arrow {
+            transform: rotate(180deg);
+        }
+
+        .extra-content {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .floating-box.expanded .extra-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="hotbar" id="hotbar">
+        <div class="hotbar-content">
+            <div class="title">Articoli</div>
+            <div class="arrow" id="arrow">▼</div>
+        </div>
+        <div class="buttons">
+            <a href="https://youtube.com/@brickers6458" target="_blank" class="button">
+                YouTube
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path fill="#FF0000" d="M23.498 6.186c-.273-1.029-1.079-1.833-2.106-2.11C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.392.576c-1.027.277-1.833 1.081-2.106 2.11C0 8.04 0 12 0 12s0 3.96.502 5.814c.273 1.029 1.079 1.833 2.106 2.11C4.46 20.5 12 20.5 12 20.5s7.54 0 9.392-.576c1.027-.277 1.833-1.081 2.106-2.11C24 15.96 24 12 24 12s0-3.96-.502-5.814zM9.546 15.568V8.432l6.593 3.568-6.593 3.568z"/>
+                </svg>
+            </a>
+            <a href="https://whatsapp.com/channel/0029Vabjtii4yltMQCO1g433" target="_blank" class="button">
+                WhatsApp
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#25D366">
+                    <path d="M12 0C5.374 0 0 5.374 0 12c0 2.092.537 4.096 1.549 5.874L0 24l6.233-1.617C8.053 23.463 10.003 24 12 24c6.627 0 12-5.374 12-12S18.627 0 12 0zm4.878 17.233c-.208.58-1.2 1.136-1.644 1.2-.444.064-.98.09-1.554-.086-.573-.177-1.32-.405-2.3-.795-2.05-.833-3.381-3.66-3.482-3.827-.1-.167-.832-1.115-.832-2.122 0-1.007.527-1.504.713-1.714.186-.21.413-.265.552-.265.139 0 .274.001.394.007.12.006.282-.046.44.341.158.386.536 1.333.584 1.426.048.093.08.204.014.33-.067.125-.101.205-.199.315-.099.11-.216.248-.308.335-.092.087-.185.184-.079.362.106.178.498.743 1.071 1.2.734.65 1.353.852 1.55.947.197.095.308.08.423-.048.116-.127.486-.556.617-.746.131-.191.262-.158.44-.095.178.063 1.134.511 1.327.602.192.092.32.138.366.217.047.078.047.455-.152 1.001z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="floating-box" id="floatingBox">
+        <div class="content">
+            Ma il logo LEGO è sempre stato così?
+            <div class="box-arrow" id="boxArrow">▼</div>
+        </div>
+        <div class="extra-content">
+            Da anni LEGO esiste portando felicità, fantasia, ma soprattutto immaginazione. Ma il suo “logo”, ovvero il suo simbolo, è sempre stato così? Anche se il suo nome è sempre stato lo stesso fin dall’inizio, LEGO ha cambiato il suo logo ben 13 volte, cambiando alcune volte piccoli particolari, altre caratteri, colori, o la forma del riquadro. Ecco qui tutti i loghi che hanno percorso la storia della fabbrica di giocattoli più amata al mondo.
+        </div>
+    </div>
+
+    <script>
+        const hotbar = document.getElementById('hotbar');
+        const arrow = document.getElementById('arrow');
+        const floatingBox = document.getElementById('floatingBox');
+        const boxArrow = document.getElementById('boxArrow');
+        const extraContent = document.querySelector('.extra-content');
+
+        arrow.addEventListener('click', () => {
+            hotbar.classList.toggle('expanded');
+        });
+
+        boxArrow.addEventListener('click', () => {
+            const isExpanded = floatingBox.classList.toggle('expanded');
+            if (isExpanded) {
+                extraContent.style.display = 'block';
+                floatingBox.style.height = `${floatingBox.scrollHeight}px`;
+            } else {
+                floatingBox.style.height = '70px';
+                setTimeout(() => {
+                    extraContent.style.display = 'none';
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
